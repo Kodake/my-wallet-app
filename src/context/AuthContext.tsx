@@ -36,7 +36,6 @@ export const AuthContextProvider = ({ children }: any) => {
         });
     }, []);
 
-
     console.log('AuthContext state', state);
 
     return (
