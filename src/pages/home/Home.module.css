@@ -102,3 +102,8 @@
     font-size: 0.9em;
     cursor: pointer;
 }
+
+.transactions button:hover {
+    background: rgba(221, 221, 221, 0.654);
+    color: #777;
+}

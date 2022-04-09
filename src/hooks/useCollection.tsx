@@ -2,13 +2,17 @@ import { useEffect, useState, useRef } from 'react';
 import { projectFirestore } from '../firebase/config';
 import { Transaction } from '../interfaces/appInterfaces';
 
-export const useCollection = (collection: string, _query: [string, string, string]) => {
+type WhereFilterOp = [string, any, string];
+type OrderByOp = [string, any | undefined];
+
+export const useCollection = (collection: string, _query: WhereFilterOp, _orderBy: OrderByOp) => {
     const [documents, setDocuments] = useState<Transaction[] | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     // if we don't use a ref --> infinite loop in useEffect
     // _query is an array and is 'different' on every function call
     const query = useRef(_query).current;
+    const orderBy = useRef(_orderBy).current;
 
     useEffect(() => {
         // Get the collection ref
@@ -19,6 +23,10 @@ export const useCollection = (collection: string, _query: [string, string, strin
 
         if (query) {
             ref = ref.where(...query);
+        }
+
+        if (orderBy) {
+            ref = ref.orderBy(...orderBy);
         }
 
         const unsubscribe = ref.onSnapshot((snapshot: any) => {
@@ -41,7 +49,7 @@ export const useCollection = (collection: string, _query: [string, string, strin
             unsubscribe();
         }
 
-    }, [collection, query]);
+    }, [collection, query, orderBy]);
 
     return { documents, error };
 
